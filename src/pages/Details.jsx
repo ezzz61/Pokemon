@@ -13,15 +13,21 @@ function Details() {
     },
   });
 
+  if (error) {
+    return error;
+  }
+
   return (
     <>
       <main className=" w-10/12 lg:w-8/12 mx-auto">
-        <div className="flex flex-col-reverse lg:flex-row mt-20 gap-8">
+        <div className="flex flex-col-reverse justify-between lg:flex-row mt-20 gap-8">
           <div className="lg:w-4/12">
             <p className="font-semibold">#{!loading && data.pokemon.id} </p>
             {!loading &&
               data.pokemon.types.map((data) => (
-                <span className="uppercase mr-2">{data.type.name}</span>
+                <span key={data.type.name} className="uppercase mr-2">
+                  {data.type.name}
+                </span>
               ))}
             <h1 className=" text-3xl font-semibold">{!loading && data.pokemon.name}</h1>
             <p className="mt-5">
@@ -43,7 +49,7 @@ function Details() {
               alt=""
             />
           </div>
-          <div className="lg:w-4/12 mx-auto hidden lg:block">
+          {/* <div className="lg:w-4/12 mx-auto hidden lg:block">
             <div className="">
               <h4 className=" text-lg font-semibold">Type</h4>
               <ul className="flex gap-2 mt-2">
@@ -59,7 +65,7 @@ function Details() {
                 <li className="w-4 h-4 rounded-full bg-green-500"></li>
               </ul>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="">
           <div className="mt-8">

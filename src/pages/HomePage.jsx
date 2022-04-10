@@ -19,7 +19,7 @@ function HomePage() {
     variables: { limit, offset },
   });
 
-  if (!loading) totalItem = pokemonList.pokemons.count;
+  if (!loading) totalItem = pokemonList ? pokemonList.pokemons.count : {};
 
   const loadMore = (e) => {
     const total = e.selected * limit;
@@ -30,7 +30,11 @@ function HomePage() {
     setPageCount(Math.floor(Math.ceil(totalItem / limit)));
     let variables = { limit: 20, offset };
     refetch(variables);
-  }, [offset, limit]);
+  }, [offset, limit, totalItem, refetch]);
+
+  if (error) {
+    return error;
+  }
 
   return (
     <>
