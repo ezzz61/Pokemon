@@ -48,9 +48,9 @@ function HomePage() {
                 Collect best and rare <br /> pokemon!
               </h1>
             </div>
-            <div className="mt-10">
-              <button className="bg-yellow-400 border-2 border-blue-800 text-blue-800 font-bold py-2 px-10">
-                CATCH POKEMON!
+            <div className="bg-yellow-500 mt-12 w-6/12">
+              <button className=" bg-yellow-400 w-full h-full py-1.5 text-gray-900 font-semibold translate-x-1 -translate-y-1 active:translate-x-0 active:translate-y-0 transition-all">
+                Start Catching!
               </button>
             </div>
           </div>

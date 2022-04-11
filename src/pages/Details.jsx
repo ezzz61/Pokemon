@@ -1,17 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_POKEMON_DETAILS } from "../graphql/pokemon.js";
 import MoveList from "../components/MoveList/MoveList.jsx";
+import pokeball from "../assets/pokeball.svg";
+import Rodal from "rodal";
+import "rodal/lib/rodal.css";
 
 function Details() {
   const { name } = useParams();
+  const [showModal, setShowModal] = useState(false);
+  const [showFailedModal, setShowFailedModal] = useState(false);
+  const [catchStatus, setCatchStatus] = useState(null);
+  const catchWord = "Catching...";
+  const splitParagaph = catchWord.split("");
 
-  const { loading, error, data } = useQuery(GET_POKEMON_DETAILS, {
+  const {
+    loading,
+    error,
+    data: details,
+  } = useQuery(GET_POKEMON_DETAILS, {
     variables: {
       pokemonName: name,
     },
   });
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const catchRate = () => {
+    const randomNumb = Math.random();
+    const getCatchResult = randomNumb < 0.5 ? false : true;
+    getCatchResult ? setCatchStatus(true) : setShowFailedModal(true);
+  };
+
+  const addToMyList = (e) => {
+    e.preventDefault();
+
+    const currentPokemonList = localStorage.getItem("pokemons");
+    let payload = { ...details.pokemon, nickname: e.target.name.value };
+
+    if (currentPokemonList) {
+      let currentData = [...JSON.parse(currentPokemonList)];
+      currentData.push(payload);
+      localStorage.setItem("pokemons", JSON.stringify(currentData));
+      setCatchStatus(false);
+    } else {
+      let createNewList = [payload];
+      localStorage.setItem("pokemons", JSON.stringify(createNewList));
+      setCatchStatus(false);
+    }
+
+    // reset input
+    e.target.name.value = "";
+  };
+
+  const catchPokemon = () => {
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false);
+      catchRate();
+    }, 3000);
+  };
 
   if (error) {
     return error;
@@ -19,33 +70,125 @@ function Details() {
 
   return (
     <>
+      {/* failed Modal */}
+      <Rodal
+        height={300}
+        visible={showFailedModal}
+        onClose={() => {
+          setShowFailedModal(false);
+        }}
+        closeMaskOnClick={false}
+      >
+        <div className="w-full h-full">
+          <div className="flex flex-col items-center gap-2 mt-8">
+            <h1 className=" text-2xl font-semibold">Oooppsiee!</h1>
+            <img className="h-16 mt-4 animate-pulse" src={pokeball} alt="" />
+            <div className="h-10 flex flex-col gap-4 mt-5">
+              <p>Pokemon Run Awayy</p>
+              <div className="bg-yellow-500 mt-2">
+                <button
+                  onClick={() => {
+                    setShowFailedModal(false);
+                  }}
+                  className=" bg-yellow-400 w-full h-full py-1 px-3 text-gray-900 font-semibold translate-x-1 -translate-y-1 active:translate-x-0 active:translate-y-0 transition-all"
+                >
+                  Okay :(
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Rodal>
+      {/* success Modal */}
+      <Rodal
+        height={300}
+        visible={catchStatus}
+        showCloseButton={false}
+        onClose={() => {
+          setCatchStatus(false);
+        }}
+        closeMaskOnClick={false}
+      >
+        <div className="w-full h-full">
+          <div className="flex flex-col items-center gap-2 mt-2">
+            <h1 className=" text-2xl font-semibold">GHOTCHA!</h1>
+            <img className="h-16 mt-4 animate-spin" src={pokeball} alt="" />
+            <div className="h-10 flex flex-col gap-2 mt-5">
+              <input
+                name="name"
+                maxLength="50"
+                placeholder="Pokemon name"
+                className=" border-b border-black outline-none pb-1"
+                type="text"
+              />
+              <div className="bg-yellow-500 mt-4">
+                <button
+                  onClick={addToMyList}
+                  className=" bg-yellow-400 w-full h-full py-1 px-3 text-gray-900 font-semibold translate-x-1 -translate-y-1 active:translate-x-0 active:translate-y-0 transition-all"
+                >
+                  SUBMIT
+                </button>
+              </div>
+              <button
+                onClick={() => {
+                  setCatchStatus(false);
+                }}
+                className="text-gray-400 uppercase text-sm"
+              >
+                release
+              </button>
+            </div>
+          </div>
+        </div>
+      </Rodal>
+      {/* Cacthing Modal */}
+      <Rodal
+        visible={showModal}
+        onClose={closeModal}
+        closeMaskOnClick={false}
+        showCloseButton={false}
+      >
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <img className="h-20 animate-bounce" src={pokeball} alt="" />
+          <div className="flex gap-2 mt-8">
+            {splitParagaph.map((data, index) => (
+              <p className="animate-bounce font-semibold" key={index}>
+                {data}
+              </p>
+            ))}
+          </div>
+        </div>
+      </Rodal>
       <main className=" w-10/12 lg:w-8/12 mx-auto">
         <div className="flex flex-col-reverse justify-between lg:flex-row mt-20 gap-8">
           <div className="lg:w-4/12">
-            <p className="font-semibold">#{!loading && data.pokemon.id} </p>
+            <p className="font-semibold">#{!loading && details.pokemon.id} </p>
             {!loading &&
-              data.pokemon.types.map((data) => (
+              details.pokemon.types.map((data) => (
                 <span key={data.type.name} className="uppercase mr-2">
                   {data.type.name}
                 </span>
               ))}
-            <h1 className=" text-3xl font-semibold">{!loading && data.pokemon.name}</h1>
+            <h1 className=" text-3xl font-semibold">{!loading && details.pokemon.name}</h1>
             <p className="mt-5">
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore illo repellendus
               officia sed ipsa excepturi deserunt laboriosam dolor temporibus tenetur suscipit
               exercitationem nihil corrupti, in aspernatur velit dolores alias numquam.
             </p>
 
-            <div className="mt-8">
-              <button className="bg-yellow-400 border-2 w-full lg:w-10/12 border-blue-800 text-blue-800 font-bold py-2 px-10">
-                CATCH POKEMON!
+            <div className="bg-yellow-500 mt-6">
+              <button
+                onClick={catchPokemon}
+                className=" bg-yellow-400 w-full h-full py-1.5 text-gray-900 font-semibold translate-x-1 -translate-y-1 active:translate-x-0 active:translate-y-0 transition-all"
+              >
+                Catch!
               </button>
             </div>
           </div>
           <div className="lg:w-4/12">
             <img
               className="w-full"
-              src={`${process.env.REACT_APP_IMAGE_URL}/${!loading && data.pokemon.id}.svg`}
+              src={`${process.env.REACT_APP_IMAGE_URL}/${!loading && details.pokemon.id}.svg`}
               alt=""
             />
           </div>
@@ -54,7 +197,7 @@ function Details() {
               <h4 className=" text-lg font-semibold">Type</h4>
               <ul className="flex gap-2 mt-2">
                 {!loading &&
-                  data.pokemon.types.map((data) => <li className="uppercase">{data.type.name}</li>)}
+                  details.pokemon.types.map((details) => <li className="uppercase">{details.type.name}</li>)}
               </ul>
             </div>
             <div className="mt-8">
@@ -70,7 +213,7 @@ function Details() {
         <div className="">
           <div className="mt-8">
             <h4 className=" text-lg font-semibold">Move List</h4>
-            {!loading && <MoveList moveList={data.pokemon.moves} />}
+            {!loading && <MoveList moveList={details.pokemon.moves} />}
           </div>
         </div>
       </main>
