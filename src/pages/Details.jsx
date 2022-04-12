@@ -52,6 +52,8 @@ function Details() {
   };
 
   const addToMyList = (e) => {
+    if (nickname.length < 2) return alert("Hei name must be > then 2");
+
     e.preventDefault();
     let payload = { ...details.pokemon, nickname: nickname, identifier: uuidv4() };
 
