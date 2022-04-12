@@ -94,14 +94,16 @@ function HomePage() {
             <h1 className="text-lg lg:text-3xl font-semibold uppercase ">Pokemon List</h1>
             <span className="font-medium">Owned Pokemon ({pokemons.length})</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-16 gap-14">
+          <div className="">
             {!loading ? (
-              pokemonList.pokemons?.results?.map((data, index) => (
-                <PokemonCard name={data.name} id={data.id} key={data.id} />
-              ))
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-16 gap-14">
+                {pokemonList.pokemons?.results?.map((data, index) => (
+                  <PokemonCard name={data.name} id={data.id} key={data.id} />
+                ))}
+              </div>
             ) : (
               <div className=" flex justify-center items-center min-h-[50vh] w-full">
-                <img className="  animate-spin" src={pokeball} alt="pokeball icon" />
+                <img className="animate-spin" src={pokeball} alt="pokeball icon" />
               </div>
             )}
           </div>

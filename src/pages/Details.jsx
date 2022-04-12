@@ -41,11 +41,13 @@ function Details() {
 
   const checkPokemonNickname = (type, name) => {
     const currentPokemons = JSON.parse(currentPokemonList);
-    const result = currentPokemons.find((data) => data.type === type && data.nickname === name);
 
-    if (result) {
-      setAlerModal(true);
-      return true;
+    if (currentPokemons) {
+      const result = currentPokemons.find((data) => data.type === type && data.nickname === name);
+      if (result) {
+        setAlerModal(true);
+        return true;
+      }
     }
   };
 

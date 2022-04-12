@@ -38,7 +38,7 @@ function MyPokemon() {
         ) : (
           <div className="">
             <h1 className="text-center">You dont have pokemon!</h1>
-            <div className="w-2/12 mx-auto mt-8">
+            <div className="lg:w-2/12 mx-auto mt-8">
               <div className="bg-yellow-500 mt-2 ">
                 <button className=" bg-yellow-400 w-full h-full py-1 px-3 text-gray-900 font-semibold translate-x-1 -translate-y-1 active:translate-x-0 active:translate-y-0 transition-all">
                   <Link to="/">Lets Catch em!</Link>
