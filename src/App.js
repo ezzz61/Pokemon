@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Header/Navbar";
 import HomePage from "./pages/HomePage";
 import Details from "./pages/Details";
+import MyPokemon from "./pages/MyPokemon";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/Footer";
 
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/my-collections" element={<MyPokemon />} />
         <Route path="pokemon">
           <Route path=":name" element={<Details />} />
         </Route>

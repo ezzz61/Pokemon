@@ -22,7 +22,7 @@ export default function MoveList({ moveList }) {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-2 text-white mt-4">
+    <div className="flex flex-wrap gap-2 text-white mt-4 ">
       {!moveListData.length ? (
         <p>No Move List!</p>
       ) : (
